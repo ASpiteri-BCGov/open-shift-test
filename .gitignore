@@ -1,3 +1,4 @@
 sqltools*
 .vscode*
 .DS*
+node_modules/*
