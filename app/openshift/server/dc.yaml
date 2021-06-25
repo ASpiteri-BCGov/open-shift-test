@@ -45,9 +45,9 @@ objects:
         app: ${NAME}
     spec:
       ports:
-        - name: ${PORT}-tcp
-          port: ${{PORT}}
-          targetPort: ${{PORT}}
+        - name: 8080-tcp
+          port: 5000
+          targetPort: 8080
       selector:
         deploymentconfig: ${NAME}${SUFFIX}
   - kind: Route
@@ -57,9 +57,9 @@ objects:
       labels:
         app: "${NAME}"
     spec:
-      host: "${NAME}${SUFFIX}.${NAMESPACE}.apps.silver.devops.gov.bc.ca"
+      host: "${NAME}.${NAMESPACE}.apps.silver.devops.gov.bc.ca"
       port:
-        targetPort: ${PORT}-tcp
+        targetPort: 8080
       path: ''
       to:
         kind: Service
@@ -103,7 +103,7 @@ objects:
               image: " "
               ports:
                 - name: ${NAME}
-                  containerPort: ${{PORT}}
+                  containerPort: 5000
                   protocol: TCP
 #              livenessProbe:
 #                failureThreshold: 3
@@ -163,7 +163,7 @@ parameters:
     description: service open port
   - name: NAME
     required: true
-    value: sample-todo-server
+    value: todo-api
   - name: NAMESPACE
     required: true
   - name: VERSION

@@ -68,7 +68,7 @@ objects:
       resources: {}
       runPolicy: Serial
       source:
-        contextDir: app
+        contextDir: app/server
         git:
           ref: ${GIT_BRANCH}
           uri: ${GIT_URL}
@@ -86,10 +86,8 @@ objects:
         - type: ImageChange
 parameters:
   - name: NAME
-    required: true
-    value: sample-todo-server
+    value: todo-api
   - name: GIT_URL
-    required: true
     value: https://github.com/ASpiteri-BCGov/open-shift-test.git
     description: version as an image tag
   - name: VERSION

@@ -86,10 +86,8 @@ objects:
         - type: ImageChange
 parameters:
   - name: NAME
-    required: true
-    value: sample-todo
+    value: todo-web
   - name: GIT_BRANCH
-    required: true
   - name: GIT_URL
     required: true
     value: https://github.com/ASpiteri-BCGov/open-shift-test.git

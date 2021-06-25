@@ -59,7 +59,7 @@ objects:
     spec:
       host: "${NAME}${SUFFIX}.${NAMESPACE}.apps.silver.devops.gov.bc.ca"
       port:
-        targetPort: ${PORT}-tcp
+        targetPort: 8080
       path: ''
       to:
         kind: Service
@@ -138,11 +138,11 @@ objects:
 parameters:
   - name: PORT
     required: true
-    value: "8080"
+    value: "3000"
     description: service open port
   - name: NAME
     required: true
-    value: sample-todo
+    value: todo-web
   - name: NAMESPACE
     required: true
   - name: VERSION
