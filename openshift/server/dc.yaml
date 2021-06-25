@@ -20,7 +20,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: ${NAME}${SUFFIX}
+  name: todo-server
   annotations:
     description: Deployment template for a nodejs server and postgres db.
     tags: node
@@ -31,48 +31,48 @@ objects:
     metadata:
       labels:
         shared: "true"
-      name: "${NAME}"
+      name: "todo-server"
     spec:
       lookupPolicy:
         local: true
   - kind: Service
     apiVersion: v1
     metadata:
-      name: ${NAME}${SUFFIX}
+      name: todo-server
       annotations:
         description: Exposes and load balances the application pods
       labels:
-        app: ${NAME}
+        app: todo-server
     spec:
       ports:
         - name: 8080-tcp
-          port: 5000
+          port: 8080
           targetPort: 8080
       selector:
-        deploymentconfig: ${NAME}${SUFFIX}
+        deploymentconfig: todo-server
   - kind: Route
     apiVersion: v1
     metadata:
-      name: "${NAME}${SUFFIX}"
+      name: "todo-server"
       labels:
-        app: "${NAME}"
+        app: "todo-server"
     spec:
-      host: "${NAME}.${NAMESPACE}.apps.silver.devops.gov.bc.ca"
+      host: "todo-server.apps.silver.devops.gov.bc.ca"
       port:
         targetPort: 8080
       path: ''
       to:
         kind: Service
-        name: "${NAME}${SUFFIX}"
+        name: "todo-server"
         weight: 100
       tls:
         termination: edge
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: ${NAME}${SUFFIX}
+      name: todo-server
       labels:
-        app: ${NAME}
+        app: todo-server
       annotations:
         description: Defines how to deploy the application server
     spec:
@@ -83,27 +83,27 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - ${NAME}${SUFFIX}
+              - todo-server
             from:
               kind: ImageStreamTag
-              name: "${NAME}:${VERSION}"
+              name: "todo-server:1.0"
         - type: ConfigChange
       replicas: 1
       selector:
-        name: ${NAME}${SUFFIX}
+        name: todo-server
       template:
         metadata:
-          name: ${NAME}${SUFFIX}
+          name: todo-server
           labels:
-            name: ${NAME}${SUFFIX}
-            app: ${NAME}
+            name: todo-server
+            app: todo-server
         spec:
           containers:
-            - name: ${NAME}${SUFFIX}
+            - name: todo-server
               image: " "
               ports:
-                - name: ${NAME}
-                  containerPort: 5000
+                - name: todo-server
+                  containerPort: 8080
                   protocol: TCP
 #              livenessProbe:
 #                failureThreshold: 3
@@ -134,7 +134,7 @@ objects:
                   cpu: 1
               env:
                 - name: port
-                  value: ${PORT}
+                  value: 8080
                 - name: user
                   valueFrom:
                     secretKeyRef:
@@ -156,19 +156,3 @@ objects:
                       name: postgresql
                       key: database-name
 
-parameters:
-  - name: PORT
-    required: true
-    value: "5432"
-    description: service open port
-  - name: NAME
-    required: true
-    value: todo-api
-  - name: NAMESPACE
-    required: true
-  - name: VERSION
-    required: true
-    description: version as an image tag
-  - name: SUFFIX
-    required: false
-    description: version as an image tag
