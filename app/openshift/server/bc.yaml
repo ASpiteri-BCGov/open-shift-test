@@ -90,7 +90,7 @@ parameters:
     value: sample-todo-server
   - name: GIT_URL
     required: true
-    value: https://github.com/bcgov/citz-dst-capstone-2021.git
+    value: https://github.com/ASpiteri-BCGov/open-shift-test.git
     description: version as an image tag
   - name: VERSION
     required: true
