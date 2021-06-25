@@ -134,7 +134,7 @@ objects:
                   cpu: 1
               env:
                 - name: port
-                  value: 8080
+                  value: '5432'
                 - name: user
                   valueFrom:
                     secretKeyRef:
