@@ -87,7 +87,7 @@ objects:
 parameters:
   - name: NAME
     required: true
-    value: rdsi-client
+    value: sample-todo
   - name: GIT_BRANCH
     required: true
   - name: GIT_URL

@@ -133,29 +133,38 @@ objects:
                   memory: 512Mi
                   cpu: 1
               env:
-                - name: PORT
+                - name: port
                   value: ${PORT}
-                - name: MONGODB_URI
-                  value: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_URL}:27017"
-                - name: MONGODB_DB_MAIN
-                  value: ${MONGODB_DB_MAIN}
+                - name: user
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql
+                      key: database-user
+                - name: password
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql
+                      key: database-password
+                - name: database
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql
+                      key: database-user
+                - name: database
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql
+                      key: database-name
+
 parameters:
   - name: PORT
     required: true
-    value: "8080"
+    value: "5432"
     description: service open port
   - name: NAME
     required: true
-    value: rdsi-server
+    value: sample-todo-server
   - name: NAMESPACE
-    required: true
-  - name: MONGODB_USER
-    required: true
-  - name: MONGODB_PASSWORD
-    required: true
-  - name: MONGODB_URL
-    required: true
-  - name: MONGODB_DB_MAIN
     required: true
   - name: VERSION
     required: true

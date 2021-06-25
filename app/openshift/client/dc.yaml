@@ -142,7 +142,7 @@ parameters:
     description: service open port
   - name: NAME
     required: true
-    value: rdsi-client
+    value: sample-todo
   - name: NAMESPACE
     required: true
   - name: VERSION

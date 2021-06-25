@@ -87,7 +87,7 @@ objects:
 parameters:
   - name: NAME
     required: true
-    value: rdsi-server
+    value: sample-todo-server
   - name: GIT_URL
     required: true
     value: https://github.com/bcgov/citz-dst-capstone-2021.git
