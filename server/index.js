@@ -3,12 +3,15 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 var pgp = require('pg-promise')(/* options */)
-const user = process.env.user
-const password = process.env.password
-const port = process.env.port
-const database = process.env.database
-const host = process.env.host
-var db = pgp(`postgres://${user}:${password}:${port}@${host}/${database}`)
+const cn = {
+  host: process.env.host, // server name or IP address;
+  port: process.env.port,
+  database: process.env.database,
+  user: process.env.user,
+  password: process.env.password
+};
+
+var db = pgp(cn)
 
 
 //middleware

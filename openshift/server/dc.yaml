@@ -133,26 +133,23 @@ objects:
                   memory: 512Mi
                   cpu: 1
               env:
+                - name: host
+                  value: patroni-master
                 - name: port
                   value: '5432'
+                - name: database
+                  valueFrom:
+                    secretKeyRef:
+                      key: app-db-name
+                      name: patroni
                 - name: user
                   valueFrom:
                     secretKeyRef:
-                      name: postgresql
-                      key: database-user
+                      key: app-db-username
+                      name: patroni
                 - name: password
                   valueFrom:
                     secretKeyRef:
-                      name: postgresql
-                      key: database-password
-                - name: database
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-user
-                - name: database
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-name
+                      key: app-db-password
+                      name: patroni
 
