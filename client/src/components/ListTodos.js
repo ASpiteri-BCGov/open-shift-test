@@ -21,7 +21,7 @@ const ListTodos = () => {
 
   const getTodos = async () => {
     try {
-      const response = await fetch("http://todo-server.apps.silver.devops.gov.bc.ca/todos");
+      const response = await fetch("https://todo-server.apps.silver.devops.gov.bc.ca/todos");
       const jsonData = await response.json();
 
       setTodos(jsonData);
