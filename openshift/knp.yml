@@ -20,9 +20,9 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 labels:
-  template: platform-registry
+  template: openshift-test
 metadata:
-  name: platform-registry-network-policies
+  name: openshift-test-network-policies
 objects:
   - apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
@@ -62,7 +62,7 @@ objects:
   - kind: NetworkPolicy
     apiVersion: networking.k8s.io/v1
     metadata:
-      name: allow-app-to-mongo
+      name: allow-app-to-postgres
     spec:
       # Allow the API to talk to the patroni
       # database cluster on the given port.
