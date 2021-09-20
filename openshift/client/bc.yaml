@@ -70,7 +70,7 @@ objects:
       source:
         contextDir: client
         git:
-          ref: master
+          ref: main
           uri: https://github.com/ASpiteri-BCGov/open-shift-test.git
         type: Git
       strategy:
