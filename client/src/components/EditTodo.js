@@ -5,7 +5,7 @@ const EditTodo = ({ todo }) => {
 
   //edit description function
 
-  const updateDescription = async e => {
+  const updateDescription = async (e) => {
     e.preventDefault();
     try {
       const body = { description };
@@ -14,7 +14,7 @@ const EditTodo = ({ todo }) => {
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
+          body: JSON.stringify(body),
         }
       );
 
@@ -62,7 +62,7 @@ const EditTodo = ({ todo }) => {
                 type="text"
                 className="form-control"
                 value={description}
-                onChange={e => setDescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
@@ -71,7 +71,7 @@ const EditTodo = ({ todo }) => {
                 type="button"
                 class="btn btn-warning"
                 data-dismiss="modal"
-                onClick={e => updateDescription(e)}
+                onClick={(e) => updateDescription(e)}
               >
                 Edit
               </button>
