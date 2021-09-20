@@ -7,13 +7,16 @@ const ListTodos = () => {
 
   //delete todo function
 
-  const deleteTodo = async id => {
+  const deleteTodo = async (id) => {
     try {
-      const deleteTodo = await fetch(`https://todo-server.apps.silver.devops.gov.bc.ca/todos/${id}`, {
-        method: "DELETE"
-      });
+      const deleteTodo = await fetch(
+        `https://todo-server.apps.silver.devops.gov.bc.ca/todos/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-      setTodos(todos.filter(todo => todo.todo_id !== id));
+      setTodos(todos.filter((todo) => todo.todo_id !== id));
     } catch (err) {
       console.error(err.message);
     }
@@ -21,7 +24,9 @@ const ListTodos = () => {
 
   const getTodos = async () => {
     try {
-      const response = await fetch("https://todo-server.apps.silver.devops.gov.bc.ca/todos");
+      const response = await fetch(
+        "https://todo-server.apps.silver.devops.gov.bc.ca/todos"
+      );
       const jsonData = await response.json();
 
       setTodos(jsonData);
@@ -53,7 +58,7 @@ const ListTodos = () => {
             <td>Doe</td>
             <td>john@example.com</td>
           </tr> */}
-          {todos.map(todo => (
+          {todos.map((todo) => (
             <tr key={todo.todo_id}>
               <td>{todo.description}</td>
               <td>
