@@ -18,6 +18,9 @@
 # your tools namespace.
 ---
 kind: Template
+parameters:
+ - name: branchref
+   required: true
 apiVersion: v1
 metadata:
   name: todo-client
@@ -70,7 +73,7 @@ objects:
       source:
         contextDir: client
         git:
-          ref: main
+          ref: $branchref
           uri: https://github.com/ASpiteri-BCGov/open-shift-test.git
         type: Git
       strategy:
@@ -84,4 +87,6 @@ objects:
       triggers:
         - type: ConfigChange
         - type: ImageChange
-
+        
+  
+  
