@@ -82,8 +82,8 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL }}
-          npm ci
-          DEBUG=* npm run deploy -- --pr=${{ github.event.pull_request.number }} --env=dev --git.branch.name=${{github.head_ref}} --git.ref=${{github.head_ref}}
+          oc -n ca94a8-dev process -f openshift/client/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
+          oc -n ca94a8-dev process -f openshift/server/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
   deploy-to-test:
     needs: [build,deploy-to-dev]
     environment:
@@ -102,8 +102,8 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL }}
-          npm ci
-          DEBUG=* npm run deploy -- --pr=${{ github.event.pull_request.number }} --env=test --git.branch.name=${{github.head_ref}} --git.ref=${{github.head_ref}}
+          oc -n ca94a8-test process -f openshift/client/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
+          oc -n ca94a8-test process -f openshift/server/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
   
   deploy-to-prod:
     needs: [build,deploy-to-dev, deploy-to-test]
@@ -123,7 +123,7 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL}}
-          npm ci
-          DEBUG=* npm run deploy -- --pr=${{ github.event.pull_request.number }} --env=prod --git.branch.name=${{github.head_ref}} --git.ref=${{github.head_ref}}
+          oc -n ca94a8-prod process -f openshift/client/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
+          oc -n ca94a8-prod process -f openshift/server/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
 
   
