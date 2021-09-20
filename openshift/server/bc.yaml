@@ -19,6 +19,9 @@
 ---
 kind: Template
 apiVersion: v1
+parameters:
+ - name: branchref
+   required: true
 metadata:
   name: todo-server
 objects:
@@ -70,7 +73,7 @@ objects:
       source:
         contextDir: server
         git:
-          ref: main
+          ref: $branchref
           uri: https://github.com/ASpiteri-BCGov/open-shift-test.git
         type: Git
       strategy:
