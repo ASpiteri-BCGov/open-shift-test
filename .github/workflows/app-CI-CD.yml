@@ -51,7 +51,7 @@ jobs:
       - name: Build
         run: |
           oc version
-          oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL }}
+          oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_URL }}
           oc -n ca94a8-tools process -f openshift/client/bc.yaml | oc -n ca94a8-tools apply -f -
           oc -n ca94a8-tools process -f openshift/server/bc.yaml | oc -n ca94a8-tools apply -f -
           
