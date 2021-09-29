@@ -2,9 +2,9 @@
 const options = require('@bcgov/pipeline-cli').Util.parseArguments()
 const changeId = options.pr //aka pull-request
 const version = '1.0.0'
-const name = 'openshift-test'
+const name = 'todo'
 
-Object.assign(options.git, {owner: 'bcgov', repository: 'citz-dst-capstone-2021'})
+Object.assign(options.git, {owner: 'ASpiteri-BCGov', repository: 'open-shift-test'})
 const phases = {
   build: {
     namespace: 'poornima-sivanand-tools',

@@ -20,7 +20,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: todo-client
+  name: ${NAME}
 objects:
   - kind: ImageStream
     apiVersion: image.openshift.io/v1
@@ -42,7 +42,7 @@ objects:
   - kind: ImageStream
     apiVersion: image.openshift.io/v1
     metadata:
-      name: "todo-client"
+      name: "${NAME}"
       labels:
         shared: 'true'
       annotations:
@@ -55,23 +55,23 @@ objects:
     apiVersion: build.openshift.io/v1
     metadata:
       labels:
-        build: todo-client
-      name: todo-client
+        build: ${NAME}${SUFFIX}
+      name: ${NAME}${SUFFIX}
     spec:
       failedBuildsHistoryLimit: 5
       nodeSelector: null
       output:
         to:
           kind: ImageStreamTag
-          name: "todo-client:1.0"
+          name: "${NAME}:${VERSION}"
       postCommit: {}
       resources: {}
       runPolicy: Serial
       source:
         contextDir: client
         git:
-          ref: master
-          uri: https://github.com/ASpiteri-BCGov/open-shift-test.git
+          ref: ${GIT_BRANCH}
+          uri: ${GIT_URL}
         type: Git
       strategy:
         sourceStrategy:
@@ -84,4 +84,19 @@ objects:
       triggers:
         - type: ConfigChange
         - type: ImageChange
-
+parameters:
+  - name: NAME
+    required: true
+    value: ${NAME}
+  - name: GIT_BRANCH
+    required: true
+  - name: GIT_URL
+    required: true
+    value: https://github.com/ASpiteri-BCGov/open-shift-test.git
+    description: version as an image tag
+  - name: VERSION
+    required: true
+    description: version as an image tag
+  - name: SUFFIX
+    required: true
+    description: version as an image tag

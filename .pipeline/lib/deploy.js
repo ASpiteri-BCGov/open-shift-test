@@ -11,22 +11,16 @@ module.exports = (settings)=>{
   const oc=new OpenShiftClientX(Object.assign({'namespace':phases[phase].namespace}, options));
   var objects = []
 
-  const mongoCredential = {};
-  const mongoSecret = new OpenShiftClient({namespace:phases[phase].namespace}).get('secrets/mongodb')[0];
-  mongoCredential['user'] = Buffer.from(mongoSecret.data['database-user'], 'base64').toString('utf-8');
-  mongoCredential['pass'] = Buffer.from(mongoSecret.data['database-password'], 'base64').toString('utf-8');
 
   const templatesLocalBaseUrl =oc.toFileUrl(path.resolve(__dirname, '../../openshift'))
-  //
-  // objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/client/dc.yaml`, {
-  //   'param':{
-  //     'NAME': `${phases[phase].name}-client`,
-  //     'SUFFIX': phases[phase].suffix,
-  //     'VERSION': phases[phase].tag,
-  //     'NAMESPACE': phases[phase].namespace,
-  //     'PORT': 8080,
-  //   }
-  // }))
+
+  objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/database/db-secrets.yml`, {
+
+  }))
+
+  objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/database/db-deploy.yml`, {
+
+  }))
 
   objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/server/dc.yaml`, {
     'param':{
@@ -34,12 +28,19 @@ module.exports = (settings)=>{
       'SUFFIX': phases[phase].suffix,
       'VERSION': phases[phase].tag,
       'NAMESPACE': phases[phase].namespace,
-      'MONGODB_USER': mongoCredential['user'],
-      'MONGODB_PASSWORD': mongoCredential['pass'],
-      'MONGODB_URL' : 'mongodb',
-      'MONGODB_DB_MAIN' : phases[phase].name
     }
   }))
+  
+  objects.push(...oc.processDeploymentTemplate(`${templatesLocalBaseUrl}/client/dc.yaml`, {
+    'param':{
+      'NAME': `${phases[phase].name}-client`,
+      'SUFFIX': phases[phase].suffix,
+      'VERSION': phases[phase].tag,
+      'NAMESPACE': phases[phase].namespace,
+    }
+  }))
+
+ 
 
   oc.applyRecommendedLabels(objects, phases[phase].name, phase, `${changeId}`, phases[phase].instance)
   oc.importImageStreams(objects, phases[phase].tag, phases.build.namespace, phases.build.tag)

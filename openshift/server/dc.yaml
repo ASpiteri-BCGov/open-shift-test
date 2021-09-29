@@ -20,7 +20,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: todo-server
+  name: ${NAME}
   annotations:
     description: Deployment template for a nodejs server and postgres db.
     tags: node
@@ -31,48 +31,48 @@ objects:
     metadata:
       labels:
         shared: "true"
-      name: "todo-server"
+      name: "${NAME}"
     spec:
       lookupPolicy:
         local: true
   - kind: Service
     apiVersion: v1
     metadata:
-      name: todo-server
+      name: ${NAME}${SUFFIX}
       annotations:
         description: Exposes and load balances the application pods
       labels:
-        app: todo-server
+        app: ${NAME}
     spec:
       ports:
         - name: 8080-tcp
           port: 8080
           targetPort: 8080
       selector:
-        deploymentconfig: todo-server
+        deploymentconfig: ${NAME}
   - kind: Route
     apiVersion: v1
     metadata:
-      name: "todo-server"
+      name: "${NAME}${SUFFIX}"
       labels:
-        app: "todo-server"
+        app: "${NAME}"
     spec:
-      host: "todo-server.apps.silver.devops.gov.bc.ca"
+      host: "${NAME}.apps.silver.devops.gov.bc.ca"
       port:
         targetPort: 8080
       path: ''
       to:
         kind: Service
-        name: "todo-server"
+        name: "${NAME}${SUFFIX}"
         weight: 100
       tls:
         termination: edge
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
-      name: todo-server
+      name: ${NAME}
       labels:
-        app: todo-server
+        app: ${NAME}
       annotations:
         description: Defines how to deploy the application server
     spec:
@@ -83,26 +83,26 @@ objects:
           imageChangeParams:
             automatic: true
             containerNames:
-              - todo-server
+              - ${NAME}
             from:
               kind: ImageStreamTag
-              name: "todo-server:1.0"
+              name: "${NAME}:${VERSION}"
         - type: ConfigChange
       replicas: 1
       selector:
-        name: todo-server
+        name: ${NAME}
       template:
         metadata:
-          name: todo-server
+          name: ${NAME}
           labels:
-            name: todo-server
-            app: todo-server
+            name: ${NAME}
+            app: ${NAME}
         spec:
           containers:
-            - name: todo-server
+            - name: ${NAME}
               image: " "
               ports:
-                - name: todo-server
+                - name: ${NAME}
                   containerPort: 8080
                   protocol: TCP
 #              livenessProbe:
@@ -153,3 +153,14 @@ objects:
                       key: app-db-password
                       name: patroni
 
+parameters:
+  - name: NAME
+    required: true
+  - name: NAMESPACE
+    required: true
+  - name: VERSION
+    required: true
+    description: version as an image tag
+  - name: SUFFIX
+    description: version as an image tag
+    required: false
