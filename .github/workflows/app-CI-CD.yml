@@ -11,7 +11,7 @@ on:
   
 defaults:
   run:
-    working-directory: ./
+    working-directory: ./app
 
 jobs:
   # test:
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./
+        working-directory: ./app/.pipeline
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
@@ -51,18 +51,15 @@ jobs:
       - name: Build
         run: |
           oc version
-          oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_URL }}
-          oc -n ca94a8-tools process -f openshift/client/bc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
-          oc -n ca94a8-tools process -f openshift/server/bc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-tools apply -f -
-          
+          oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL }}
+          npm ci
+          DEBUG=* npm run build -- --pr=${{ github.event.pull_request.number }} --git.branch.name=${{github.head_ref}} --git.ref=${{github.head_ref}}
         env:
           CI: "true"
-          
+
   deploy-to-dev:
+    runs-on: ubuntu-latest
     needs: [build]
-    environment:
-     name: dev
-    runs-on: ubuntu-latest    
     defaults:
       run:
         working-directory: ./app/.pipeline
@@ -82,14 +79,12 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL }}
-          oc -n ca94a8-dev process -f openshift/client/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-dev apply -f -
-          oc -n ca94a8-dev process -f openshift/server/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-dev apply -f -
-          oc -n ca94a8-dev process -f openshift/database/db-secrets.yml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-dev apply -f -
-          oc -n ca94a8-dev process -f openshift/database/db-deploy.yml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-dev apply -f -
+          npm ci
+          DEBUG=* npm run deploy -- --pr=${{ github.event.pull_request.number }} --env=dev --git.branch.name=${{github.head_ref}} --git.ref=${{github.head_ref}}
   deploy-to-test:
     needs: [build,deploy-to-dev]
     environment:
-      name: test
+      name: Test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -104,15 +99,13 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL }}
-          oc -n ca94a8-test process -f openshift/client/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-test apply -f -
-          oc -n ca94a8-test process -f openshift/server/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-test apply -f -
-          oc -n ca94a8-test process -f openshift/database/db-secrets.yml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-test apply -f -
-          oc -n ca94a8-test process -f openshift/database/db-deploy.yml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-test apply -f -
+          npm ci
+          DEBUG=* npm run deploy -- --pr=${{ github.event.pull_request.number }} --env=test --git.branch.name=${{github.head_ref}} --git.ref=${{github.head_ref}}
   
   deploy-to-prod:
     needs: [build,deploy-to-dev, deploy-to-test]
     environment:
-      name: prod
+      name: Prod
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -127,9 +120,5 @@ jobs:
         run: |
           oc version
           oc login --token=${{ secrets.OPENSHIFT_TOKEN}} --server=${{ secrets.OPENSHIFT_SERVER_URL}}
-          oc -n ca94a8-prod process -f openshift/client/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-prod apply -f -
-          oc -n ca94a8-prod process -f openshift/server/dc.yaml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-prod apply -f -
-          oc -n ca94a8-prod process -f openshift/database/db-secrets.yml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-prod apply -f -
-          oc -n ca94a8-prod process -f openshift/database/db-deploy.yml -p "branchref=${{github.head_ref}}" | oc -n ca94a8-prod apply -f -
-
-  
+          npm ci
+          DEBUG=* npm run deploy -- --pr=${{ github.event.pull_request.number }} --env=prod --git.branch.name=${{github.head_ref}} --git.ref=${{github.head_ref}}
